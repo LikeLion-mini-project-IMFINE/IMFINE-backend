@@ -18,7 +18,14 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-web'
+    // Spring Boot Starters
+    implementation 'org.springframework.boot:spring-boot-starter-web' // Web support
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa' // JPA support for database integration
+
+    // MySQL Driver
+    implementation 'mysql:mysql-connector-java:8.0.33'
+
+    // Spring Boot Test dependencies
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
