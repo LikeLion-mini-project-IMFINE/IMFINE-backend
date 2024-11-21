@@ -1,4 +1,4 @@
-package org.zerock.yuchaemin.imfinebackend;
+package org.zerock.likelion.imfinebackend;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
