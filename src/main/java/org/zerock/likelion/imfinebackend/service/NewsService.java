@@ -26,7 +26,7 @@ public class NewsService {
 
     // 오늘의 뉴스 읽기 (이번 주 뉴스 중 안읽은 뉴스 랜덤 선택)
     // 읽은지 여부는 퀴즈 응시 여부로 판단
-    public List<NewsListResponseDto> getUnreadNewsList(Long userId) {
+    public NewsResponseDto getTodayNews(Long userId) {
         LocalDate now = LocalDate.now();
         LocalDate weekStart = now.with(WeekFields.of(Locale.getDefault()).dayOfWeek(), 1);
         LocalDate weekEnd = weekStart.plusDays(6);
@@ -44,6 +44,31 @@ public class NewsService {
         NewsEntity todayNews = unreadNews.get(todayIndex);
 
         return convertToNewsDto(todayNews);
+    }
+
+    // 뉴스 전체 목록 조회 ('목록보기' 버튼)
+    public List<NewsListResponseDto> getAllNews() {
+        return newsRepository.findAll().stream()
+                .map(this::convertToNewsListDto)
+                .sorted((a, b) -> b.getDate().compareTo(a.getDate())) // 최신 날짜순 정렬
+                .collect(Collectors.toList());
+    }
+
+    // UUID로 뉴스 접근 (목록에서 선택 시 필요)
+    public NewsResponseDto getNews(UUID newsId) {
+        NewsEntity news = newsRepository.findById(newsId)
+                .orElseThrow(() -> new RuntimeException("News not found"));
+        return convertToNewsDto(news);
+    }
+
+    // Entity -> NewsListResponseDto 변환
+    private NewsListResponseDto convertToNewsListDto(NewsEntity news) {
+        return NewsListResponseDto.builder()
+                .id(news.getId())
+                .date(news.getDate())
+                .title(news.getTitle())
+                .summary(news.getSummary())
+                .build();
     }
 
     // Entity -> NewsResponseDto로 변환
@@ -74,5 +99,6 @@ public class NewsService {
                 .terms(terms)
                 .quizzes(quizzes)
                 .build();
-    }
+        }
+
 }
