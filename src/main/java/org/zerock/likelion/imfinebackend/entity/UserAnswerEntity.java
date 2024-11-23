@@ -29,4 +29,7 @@ public class UserAnswerEntity {
     @Column
     private Boolean answer;
 
+    @Column(name="is_correct")
+    private Boolean isCorrect;
+
 }
