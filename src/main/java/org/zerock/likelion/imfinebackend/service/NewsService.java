@@ -27,18 +27,27 @@ public class NewsService {
     // 오늘의 뉴스 읽기 (이번 주 뉴스 중 안읽은 뉴스 랜덤 선택)
     // 읽은지 여부는 퀴즈 응시 여부로 판단
     public List<NewsListResponseDto> getUnreadNewsList(Long userId) {
-        LocalDate today = LocalDate.now();
+        LocalDate now = LocalDate.now();
+        LocalDate weekStart = now.with(WeekFields.of(Locale.getDefault()).dayOfWeek(), 1);
+        LocalDate weekEnd = weekStart.plusDays(6);
 
-        NewsEntity todayNews = newsRepository.findNewsByDate(today)
-                .orElseThrow(() -> new RuntimeException("오늘의 뉴스가 존재하지 않습니다"));
+        List<NewsEntity> unreadNews = newsRepository.findUnreadNewsInWeek(weekStart, weekEnd, userId);
 
-        boolean hasAnswered = newsRepository.hasUserAnsweredQuiz(userId, todayNews.getId());
+        if(unreadNews.isEmpty()) {
+            throw new RuntimeException("이번 주의 뉴스는 전부 다 읽으셨네요");
+        }
 
-        return convertToNewsDto(todayNews, hasAnswered);
+        // 오늘의 인덱스를 계산 (날짜를 시드로 사용)
+        int todayIndex = (int) (now.toEpochDay() % unreadNews.size());
+
+        // 오늘의 인덱스에 해당하는 뉴스를 선택
+        NewsEntity todayNews = unreadNews.get(todayIndex);
+
+        return convertToNewsDto(todayNews);
     }
 
     // Entity -> NewsResponseDto로 변환
-    private NewsResponseDto convertToNewsDto(NewsEntity news, boolean hasAnswered) {
+    private NewsResponseDto convertToNewsDto(NewsEntity news) {
         List<NewsTermResponseDto> terms = news.getNewsTerms().stream()
                 .map(term -> NewsTermResponseDto.builder()
                         .id(term.getId())
@@ -64,7 +73,6 @@ public class NewsService {
                 .content(news.getContent())
                 .terms(terms)
                 .quizzes(quizzes)
-                .hasAnswered(hasAnswered)
                 .build();
     }
 }
