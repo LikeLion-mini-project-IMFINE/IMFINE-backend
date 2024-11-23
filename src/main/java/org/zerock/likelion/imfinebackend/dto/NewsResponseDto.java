@@ -23,5 +23,6 @@ public class NewsResponseDto {
     private String content;
     private List<NewsTermResponseDto> terms;
     private List<QuizResponseDto> quizzes;
+    private boolean hasAnswered;
 
 }
