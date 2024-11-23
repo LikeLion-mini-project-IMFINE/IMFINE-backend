@@ -1,15 +1,16 @@
 package org.zerock.likelion.imfinebackend.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+
 
 @Entity
 @Table(name="user_answer")
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 public class UserAnswerEntity {
 
     @Id
