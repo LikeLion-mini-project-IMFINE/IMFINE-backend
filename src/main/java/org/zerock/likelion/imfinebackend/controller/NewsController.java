@@ -13,6 +13,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/news")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:3000")
 public class NewsController {
     private final NewsService newsService;
 

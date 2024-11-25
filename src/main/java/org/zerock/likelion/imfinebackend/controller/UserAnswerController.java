@@ -11,6 +11,7 @@ import org.zerock.likelion.imfinebackend.service.UserAnswerService;
 @RestController
 @RequestMapping("/answer")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:3000")
 public class UserAnswerController {
     private final UserAnswerService userAnswerService;
 
