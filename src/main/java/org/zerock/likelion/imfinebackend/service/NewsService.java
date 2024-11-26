@@ -46,25 +46,6 @@ public class NewsService {
 
         return convertToNewsDto(todayNews);
     }
-//    public NewsResponseDto getTodayNews(Long userId) {
-//        LocalDate now = LocalDate.now();
-//        // 이전 주의 시작일과 종료일 계산
-//        LocalDate weekStart = now.minusWeeks(1)
-//                .with(WeekFields.of(Locale.getDefault()).dayOfWeek(), 1);
-//        LocalDate weekEnd = weekStart.plusDays(6);
-//
-//        List<NewsEntity> unreadNews = newsRepository.findUnreadNewsInWeek(weekStart, weekEnd, userId);
-//
-//        if(unreadNews.isEmpty()) {
-//            throw new RuntimeException("지난 주의 안읽은 뉴스가 더 이상 없습니다");
-//        }
-//
-//        // 랜덤 선택을 위해 현재 날짜를 시드로 사용
-//        int randomIndex = (int) (now.toEpochDay() % unreadNews.size());
-//        NewsEntity todayNews = unreadNews.get(randomIndex);
-//
-//        return convertToNewsDto(todayNews);
-//    }
 
     // 뉴스 전체 목록 조회 ('목록보기' 버튼)
     public List<NewsListResponseDto> getAllNews() {
