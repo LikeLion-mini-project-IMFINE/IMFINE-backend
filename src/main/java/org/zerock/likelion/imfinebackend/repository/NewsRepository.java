@@ -22,4 +22,6 @@ public interface NewsRepository extends JpaRepository<NewsEntity, UUID> {
             @Param("weekStart") LocalDate weekStart,
             @Param("weekEnd") LocalDate weekEnd,
             @Param("userId") Long userId);
+
+    List<NewsEntity> findByDateBetween(LocalDate start, LocalDate end);
 }

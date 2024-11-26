@@ -26,25 +26,6 @@ public class NewsService {
 
     // 오늘의 뉴스 읽기 (이번 주 뉴스 중 안읽은 뉴스 랜덤 선택)
     // 읽은지 여부는 퀴즈 응시 여부로 판단
-//    public NewsResponseDto getTodayNews(Long userId) {
-//        LocalDate now = LocalDate.now();
-//        LocalDate weekStart = now.with(WeekFields.of(Locale.getDefault()).dayOfWeek(), 1);
-//        LocalDate weekEnd = weekStart.plusDays(6);
-//
-//        List<NewsEntity> unreadNews = newsRepository.findUnreadNewsInWeek(weekStart, weekEnd, userId);
-//
-//        if(unreadNews.isEmpty()) {
-//            throw new RuntimeException("이번 주의 뉴스는 전부 다 읽으셨네요");
-//        }
-//
-//        // 오늘의 인덱스를 계산 (날짜를 시드로 사용)
-//        int todayIndex = (int) (now.toEpochDay() % unreadNews.size());
-//
-//        // 오늘의 인덱스에 해당하는 뉴스를 선택
-//        NewsEntity todayNews = unreadNews.get(todayIndex);
-//
-//        return convertToNewsDto(todayNews);
-//    }
     public NewsResponseDto getTodayNews(Long userId) {
         LocalDate now = LocalDate.now();
         // 이전 주의 시작일과 종료일 계산
@@ -52,18 +33,38 @@ public class NewsService {
                 .with(WeekFields.of(Locale.getDefault()).dayOfWeek(), 1);
         LocalDate weekEnd = weekStart.plusDays(6);
 
-        List<NewsEntity> unreadNews = newsRepository.findUnreadNewsInWeek(weekStart, weekEnd, userId);
+        // 지난주의 모든 뉴스를 가져옴 (읽은/안읽은 상관없이)
+        List<NewsEntity> weeklyNews = newsRepository.findByDateBetween(weekStart, weekEnd);
 
-        if(unreadNews.isEmpty()) {
-            throw new RuntimeException("지난 주의 안읽은 뉴스가 더 이상 없습니다");
+        if(weeklyNews.isEmpty()) {
+            throw new RuntimeException("지난 주의 뉴스가 없습니다");
         }
 
         // 랜덤 선택을 위해 현재 날짜를 시드로 사용
-        int randomIndex = (int) (now.toEpochDay() % unreadNews.size());
-        NewsEntity todayNews = unreadNews.get(randomIndex);
+        int randomIndex = (int) (now.toEpochDay() % weeklyNews.size());
+        NewsEntity todayNews = weeklyNews.get(randomIndex);
 
         return convertToNewsDto(todayNews);
     }
+//    public NewsResponseDto getTodayNews(Long userId) {
+//        LocalDate now = LocalDate.now();
+//        // 이전 주의 시작일과 종료일 계산
+//        LocalDate weekStart = now.minusWeeks(1)
+//                .with(WeekFields.of(Locale.getDefault()).dayOfWeek(), 1);
+//        LocalDate weekEnd = weekStart.plusDays(6);
+//
+//        List<NewsEntity> unreadNews = newsRepository.findUnreadNewsInWeek(weekStart, weekEnd, userId);
+//
+//        if(unreadNews.isEmpty()) {
+//            throw new RuntimeException("지난 주의 안읽은 뉴스가 더 이상 없습니다");
+//        }
+//
+//        // 랜덤 선택을 위해 현재 날짜를 시드로 사용
+//        int randomIndex = (int) (now.toEpochDay() % unreadNews.size());
+//        NewsEntity todayNews = unreadNews.get(randomIndex);
+//
+//        return convertToNewsDto(todayNews);
+//    }
 
     // 뉴스 전체 목록 조회 ('목록보기' 버튼)
     public List<NewsListResponseDto> getAllNews() {
